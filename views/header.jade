@@ -1,0 +1,44 @@
+div.nav-affix
+  div.row.social-header.text-center
+    div.col-xs-12
+      small
+        div.text-center
+          a(href="https://www.facebook.com/sosaics/",target="_blank",rel="noopener")
+            img.img-responsive.margin-right-small(src="/public/images/social/facebook_white.png")
+          a(href="https://twitter.com/sosaics",target="_blank",rel="noopener")
+            img.img-responsive.margin-right-small(src="/public/images/social/twitter_white.png")
+          a(href="https://www.instagram.com/sosaics/",target="_blank",rel="noopener")
+            img.img-responsive(src="/public/images/social/instagram_white.png")
+  div.header.row
+    div.col-xs-12.main
+      nav.navbar.navbar-default(role="navigation")
+        div
+          div.navbar-header
+            a.navbar-brand(data-ng-show="navLogo",data-ng-href="{{ navLogoLink }}",target-"_blank",rel="noopener")
+              - //img(style="max-height:100%",data-ng-src="")
+              div sosaics
+            button.navbar-toggle(type="button",data-ng-click="isNavCollapsed = !isNavCollapsed")
+              span(class="sr-only") Toggle navigation
+              span(class="icon-bar")
+              span(class="icon-bar")
+              span(class="icon-bar")
+          div#navbarcoll.collapse.navbar-collapse(uib-collapse="isNavCollapsed")
+            div.navbar-left
+              ul.nav.navbar-nav
+                li.button-main
+                  a(href='/') home
+            div.navbar-right
+              ul.nav.navbar-nav
+                - if (data.session && data.session.username && data.session.username.length)
+                  li.button-main
+                    a.call-to-action(href="/mosaic/create")
+                      div create new mosaic
+                  li.button-main
+                    a(href="/dashboard") my mosaics
+                  li.button-main
+                    a(href="/logout") logout
+                - else
+                  li.button-main
+                    a(href="/createaccount") create account
+                  li.button-main
+                    a(href="/login") login

@@ -1,0 +1,38 @@
+extends layout
+
+block main
+  div.container(data-ng-controller="LoginController")
+    div.row
+      div.col-xs-12.col-sm-8.col-sm-offset-2.col-md-4.col-md-offset-4
+        h1 {{ title }}
+        div.panel.panel-primary.shadow-small
+          div.panel-body
+            form(action="/login",method="post",data-ng-submit="validateForm($event)")
+              input(type="hidden",id="create",name="create",value="{{ createValue }}")
+              div.form-group(data-ng-class="css.classes.hasData(data.username)")
+                label(for="username") Username
+                div.input-group.margin-left-small
+                  span.input-group-addon
+                    span.glyphicon.glyphicon-user
+                  input#username.form-control(type="text",name="username",placeholder="Username...",data-ng-model="data.username")
+              hr.separate-vert-large(data-ng-if="createValue")
+              div.form-group(data-ng-class="css.classes.hasData(data.password)")
+                label.margin-left-small(for="password") Password
+                div.input-group.margin-left-small
+                  span.input-group-addon
+                    span.glyphicon.glyphicon-link
+                  input#password.form-control(type="password",name="password",placeholder="Password...",data-ng-model="data.password")
+              div.form-group(data-ng-if="createValue",data-ng-class="(data.confirm_password && validateForm()) ? css.classes.hasData(data.confirm_password) : ''")
+                label.margin-left-small(for="confirm_password") Confirm Password
+                div.input-group.margin-left-small
+                  span.input-group-addon
+                    span.glyphicon.glyphicon-link
+                  input#password.form-control(type="password",name="confirm_password",placeholder="Confirm Password...",data-ng-model="data.confirm_password")
+              div.form-group.text-center
+                button(type="submit",class="btn btn-default") {{ title }}
+              div.border-rounded.bg-danger.padding-medium(data-ng-if="error")
+                div {{ error }}
+        div.center-everything.separate-vert-large(data-ng-if="createValue")
+          a(href="/login") Login to Existing Account
+        div.center-everything.separate-vert-large(data-ng-if="!createValue")
+          a(href="/createaccount") Create New Account
