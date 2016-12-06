@@ -9,12 +9,16 @@ html
     meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no")
 
     link(rel="icon",href="/public/images/favicon.png")
+    link(rel='stylesheet',type='text/css',href='/public/css/mosaicjs-master.css')
+    script(src='/public/js/dependencies/angular.min.js')
+    script(src='/public/js/dependencies/uploader.min.js')
+    script(src='/public/js/app.min.js')
 
     script(type='text/javascript').
       LOCAL_DATA=!{JSON.stringify(data.external||{})}
 
     title= pageTitle
-  body
+  body(data-ng-app="sosaicsimg",data-ng-controller="GlobalController")
     div.container-fluid
 
       - //main entry point for any views that use layout as its primary page

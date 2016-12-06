@@ -1,0 +1,212 @@
+$body_color: #000000;
+$heading-font-size: 24px;
+
+@import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+
+html, body {
+  -webkit-text-size-adjust: none;    /* This is attempting to not have the text change on a mobile device */
+  min-width:100%;
+  color: $body_color;
+  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+}
+
+.row {
+  .no-gutters {
+    margin-left: 0px;
+    margin-right: 0px;
+
+    [class^="col-"],
+    [class*="col-"] {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
+
+  .small-gutters {
+    margin-left: -5px;
+    margin-right: -5px;
+
+    [class^="col-"],
+    [class*="col-"] {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+}
+
+ul {
+  &.tiny {
+    padding-left: 3px;
+  }
+
+  &.small {
+    padding-left: 5px;
+  }
+}
+
+.click {
+  cursor: pointer;
+}
+
+.sync-loader {
+  position: fixed;
+  z-index: 9;
+}
+
+.mask {
+  position: fixed;
+  background: black;
+  top: -1px;
+  left: -1px;
+  height: 101%;
+  width: 101%;
+  opacity: 0.8;
+}
+
+.sync-loader-item {
+  position: fixed;
+  text-align: center;
+  box-shadow: 0px 0px 0px black inset, 0px -2px 25px black, 0px 2px 5px rgba(0, 0, 0, 0.1), 0px 8px 10px rgba(0, 0, 0, 0.1);
+  background: black;
+  padding: 10px;
+  color: white;
+  width: 70px;
+  height: 70px;
+  opacity: 0.6;
+  left: 50%;
+  top: 50%;
+  margin-top: -35px;
+  margin-left: -35px;
+}
+
+.navbar {
+  min-height: initial !important;
+  margin-bottom: 0px !important;
+}
+
+.navbar-default {
+  background-color: transparent !important;
+  background-color: initial !important;
+  border: none !important;
+}
+
+.navbar-default .navbar-nav > li > a {
+  border-radius: 6px;
+  color: inherit;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: #fff;
+  background: $body_color;
+}
+
+.padding-tiny {
+  padding: 3px;
+}
+
+.padding-small {
+  padding: 5px;
+}
+
+.padding-medium {
+  padding: 15px;
+}
+
+.padding-large {
+  padding: 30px;
+}
+
+.margin-left-small {
+  margin-left: 5px;
+}
+
+.margin-right-small {
+  margin-right: 5px;
+}
+
+.margin-bottom-small {
+  margin-bottom: 5px;
+}
+
+.margin-bottom-medium {
+  margin-bottom: 15px;
+}
+
+.margin-bottom-large {
+  margin-bottom: 30px;
+}
+
+.margin-top-small {
+  margin-top: 5px;
+}
+
+.margin-top-medium {
+  margin-top: 15px;
+}
+
+.margin-top-large {
+  margin-top: 30px;
+}
+
+.separate-vert-small {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.separate-vert-medium {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.separate-vert-large {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.shadow-small {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+
+.shadow-small-subtle {
+  box-shadow: 0 1px 15px #ccc;
+  -moz-box-shadow: 0 1px 15px #ccc;
+  -webkit-box-shadow: 0 1px 15px #ccc;
+}
+
+.shadow-small-color {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 0, 0, 0.1) inset !important;
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 0, 0, 0.1) inset !important;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 0, 0, 0.1) inset !important;
+}
+
+.shadow-large {
+  box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+
+.border-rounded {
+  border-radius: 5px;
+}
+
+.text-tiny {
+  font-size: 0.5em;
+}
+
+.text-small {
+  font-size: 0.8em;
+}
+
+.text-large {
+  font-size: 1.5em;
+}
+
+.text-xlarge {
+  font-size: 1.75em;
+}
+
+.text-xxxlarge {
+  font-size: 5em;
+}

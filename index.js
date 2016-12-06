@@ -85,6 +85,9 @@ function main(notClustering) {
       app.set('views', path.join(__dirname, 'views'))
       app.set('view engine', 'pug')
 
+      //static files
+      app.use('/public',express.static(path.join(__dirname,'/public')))
+
       // initialize routes object to be used to bind express routes
       var aRoutes = fs.readdirSync('routes')
       var oRoutes = {}

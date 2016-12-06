@@ -54,7 +54,7 @@ const ExpressS3 = {
   parseObjectName: function(command, params, url) {
     try {
       const commands = command.replace(new RegExp(`([^${ImageProcessor.commandKeys()}])`, 'g'), '')
-      let parsedParams = JSON.parse(params)
+      const parsedParams = ExpressS3.parseParams(params)
 
       // Of all the params provided, make sure there exists the command
       // in the list of commands to process
@@ -69,6 +69,16 @@ const ExpressS3 = {
       console.log("Error parsing info:",err,command,params,url)
       return false
     }
+  },
+
+  parseParams(params) {
+    let parsedParams
+    try {
+      parsedParams = JSON.parse(params)
+    } catch(e) {
+      parsedParams = {}
+    }
+    return parsedParams
   }
 }
 

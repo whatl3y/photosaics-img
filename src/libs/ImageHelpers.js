@@ -42,10 +42,17 @@ export default class ImageHelpers {
     if (image instanceof Buffer) return lwip.open(image, imageType(image).ext, callback)
     if (imgType) return lwip.open(image, imgType, callback)
     if (typeof image === 'string' && (image.indexOf('http://') === 0 || image.indexOf('https://') === 0)) {
-      self.imageToBuffer('url', image, function(err,buffer,type) {
-        if (err) return callback(err)
-        return self.open(buffer, callback)
-      })
+      async_waterfall([
+        function(_callback) {
+          self.imageToBuffer('url', image, _callback)
+        },
+        function(buffer, type, _callback) {
+          self.toBuffer(buffer, 'png', _callback)
+        },
+        function(newPngBuffer, _callback) {
+          self.open(newPngBuffer, 'png', _callback)
+        }
+      ],callback)
       return
     }
     lwip.open(image, callback)
@@ -98,7 +105,7 @@ export default class ImageHelpers {
           if (httpResponse.statusCode !== 200) return callback(body)
 
           let imgType = httpResponse.headers['content-type']
-          imgType = ImageHelpers.getImageTypeFromFile(`.${imgType.substring(imgType.lastIndexOf('/')+1)}`)
+          imgType = (imgType) ? ImageHelpers.getImageTypeFromFile(`.${imgType.substring(imgType.lastIndexOf('/')+1)}`) : imageType(body).ext
           return callback(null,body,imgType)
         })
         break

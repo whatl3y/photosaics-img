@@ -4,4 +4,72 @@ block main
   div.container
     div.row
       div.col-xs-12
-        div YEAHHHH BROOOO
+        h1 Instant Online Image Processing
+    div.row
+      div.col-xs-12.col-md-6
+        h3
+          u How It Works
+        ol
+          li Find the URL of an image on the internet
+          li Determine what you want to do to the image
+          li Create a new URL using the URL-generator tool below
+          li Download the processed image or put the new URL in your img tags' src attribute!
+      div.col-xs-12.col-md-6
+        div.panel.panel-default
+          div.panel-heading
+            div.text-xlarge Example
+          div.panel-body
+            div.row
+              div.col-xs-12.col-sm-8
+                div.row
+                  div.col-xs-12
+                    h3 Original URL
+                    div
+                      pre http://www.sosaics.com/file/s3/useriq_1480472152026.jpg
+                  div.col-xs-12
+                    h3 New URL
+                    div
+                      pre http://img.sosaics.com/ro/%7B%22r%22%3A%7B%22width%22%3A100%2C%22height%22%3A100%7D%2C%22o%22%3A%7B%22d%22%3A45%7D%7D/http://www.sosaics.com/file/s3/Mosaic_583e3627ec2bff0c00fe2ad5_small_1480707302302.png
+              div.col-xs-12.col-sm-4
+                h3 Original Image
+                img.img-responsive.img-thumbnail(src="http://www.sosaics.com/file/s3/useriq_1480472152026.jpg")
+              div.col-xs-12.col-sm-8
+                h3 Processing Functions
+                div
+                  ol
+                    li Resize to 100x100
+                    li Rotate image 45 degrees clockwise
+              div.col-xs-12.col-sm-4
+                h3 Processed Image
+                img.img-responsive.img-thumbnail(src="http://img.sosaics.com/ro/%7B%22r%22%3A%7B%22width%22%3A100%2C%22height%22%3A100%7D%2C%22o%22%3A%7B%22d%22%3A45%7D%7D/http://www.sosaics.com/file/s3/useriq_1480472152026.jpg")
+    div.row
+      div.col-xs-12.col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
+        div.panel.panel-info
+          div.panel-heading
+            div.text-large Command Reference
+          div.panel-body
+            ol
+              li
+                div
+                  strong b (border):
+                  span  Adds a border to the image of specified length and color (default is 'black').
+              li
+                div
+                  strong c (crop):
+                  span  Crop the image in a rectangle of specified width and height from the center of the image.
+              li
+                div
+                  strong m (mirror):
+                  span  Mirror the image over the x-axis, y-axis, or both..
+              li
+                div
+                  strong r (rotate):
+                  span  Rotate the image of specified degrees, where the final image will have a transparent canvas (if applicable).
+              li
+                div
+                  strong s (resize with same ratio):
+                  span  Resize the image to a specified width keeping the same width/height ratio.
+              li
+                div
+                  strong q (make square):
+                  span  Make the image square by cropping the image from the center outward as far as we can.

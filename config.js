@@ -22,7 +22,7 @@ var self = module.exports = {
 
   aws: {
     s3: {
-      bucket: 'sosaics'//'sosaicsimg'
+      bucket: 'sosaicsimg'
     }
   },
 
