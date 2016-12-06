@@ -8,6 +8,7 @@ var cluster = require('cluster')
 var redis = require('redis')
 var path = require('path')
 var async = require('async')
+var jade = require('pug')
 var Routes = require("./libs/Routes.js")
 var config = require("./config.js")
 var log = require('bunyan').createLogger(config.logger.options)
@@ -79,6 +80,10 @@ function main(notClustering) {
       const redisUrl = url.parse(config.redis.url)
       config.redis.client = redis.createClient(redisUrl.port, redisUrl.hostname, {no_ready_check: true})
       if (redisUrl.auth) config.redis.client.auth(redisUrl.auth.split(":")[1])
+
+      //template engine setup
+      app.set('views', path.join(__dirname, 'views'))
+      app.set('view engine', 'pug')
 
       // initialize routes object to be used to bind express routes
       var aRoutes = fs.readdirSync('routes')

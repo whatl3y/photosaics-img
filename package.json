@@ -37,8 +37,10 @@
     "minimist": "latest",
     "newrelic": "latest",
     "node-uuid": "^1.4.7",
+    "pug": "^2.0.0-beta6",
     "redis": "^2.6.3",
-    "request": "^2.75.0"
+    "request": "^2.75.0",
+    "streamifier": "^0.1.1"
   },
   "author": "Lance Whatley",
   "license": "ISC"

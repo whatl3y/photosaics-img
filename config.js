@@ -22,7 +22,7 @@ var self = module.exports = {
 
   aws: {
     s3: {
-      bucket: 'sosaicsimg'
+      bucket: 'sosaics'//'sosaicsimg'
     }
   },
 
@@ -33,7 +33,7 @@ var self = module.exports = {
 
   logger: {
     options: {
-      name: process.env.APP_NAME || "sosaics",
+      name: process.env.APP_NAME || "sosaicsimg",
       level: process.env.LOGGING_LEVEL || "info",
       stream: process.stdout
       /*streams: [

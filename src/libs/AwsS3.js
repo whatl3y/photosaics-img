@@ -13,9 +13,20 @@ export default class AwsS3 extends FileHelpers {
     this._s3 = new AWS.S3()
   }
 
+  getFileExists(options, callback) {
+    const filename = options.Key || options.filename
+    const bucket = options.Bucket || options.bucket || this.defaultbucket
+    const params = {Bucket: bucket, Key: filename}
+    this._s3.headObject(params,function(err, result) {
+      if (err && err.code === 'NotFound') return callback(null,false)
+      if (err) return callback(err)
+      return callback(null,true)
+    })
+  }
+
   getFile(options, callback) {
-    const filename = options.filename
-    const bucket = options.bucket || this.defaultbucket
+    const filename = options.Key || options.filename
+    const bucket = options.Bucket || options.bucket || this.defaultbucket
     const extraOptions = options.options || {}
     const params = ApiHandler.mergeObject({Bucket: bucket, Key: filename},extraOptions)
     // Note the raw buffer data in the file is returned in callback(err,data) {}
@@ -24,16 +35,17 @@ export default class AwsS3 extends FileHelpers {
   }
 
   getFileUrl(options, callback) {
-    const filename = options.filename
-    const bucket = options.bucket || this.defaultbucket
+    const filename = options.Key || options.filename
+    const bucket = options.Bucket || options.bucket || this.defaultbucket
     const params = {Bucket: bucket, Key: filename}
     this._s3.getSignedUrl('getObject',params,callback)
   }
 
   writeFile(options, callback) {
-    const bucket = options.bucket || this.defaultbucket
+    const bucket = options.Bucket || options.bucket || this.defaultbucket
     const data = options.data
-    const filename = (!options.exact_filename) ? this.fileName(options.filename) : options.filename
+    let filename = options.Key || options.filename
+    filename = (!options.exact_filename) ? this.fileName(filename) : filename
     const params = {Bucket: bucket, Key: filename, Body: data}
     this._s3.putObject(params, function(err,returnedData) {
       return callback(err,filename)
@@ -42,9 +54,10 @@ export default class AwsS3 extends FileHelpers {
 
   writeFileFromFilePath(options, callback) {
     const self = this
-    const bucket = options.bucket || this.defaultbucket
+    const bucket = options.Bucket || options.bucket || this.defaultbucket
     const filePath = options.path
-    const filename = (!options.exact_filename) ? this.fileName(filePath) : filePath
+    let filename = options.Key || options.filename
+    filename = (!options.exact_filename) ? this.fileName(filename) : filename
     let params = {Bucket: bucket, Key: filename}
     async_waterfall([
       function(_callback) {
