@@ -1,0 +1,29 @@
+- // Inherits AngularJS GlobalController
+div.form-group
+  label Image URL (be sure to include the protocol [http:// or https://])
+  input.form-control.input-lg(type="text",data-ng-model="imageUrl",placeholder="Image URL...")
+div.panel.panel-default
+  div.panel-body
+    div.text-large Processing Functions
+    div.form-group.text-center
+      div.btn-group
+        button.btn.btn-default(data-ng-click="updateAryLength('processingFunctions')")
+          span(class="glyphicon glyphicon-plus")
+        button.btn.btn-default(data-ng-click="updateAryLength('processingFunctions','dec')")
+          span(class="glyphicon glyphicon-minus")
+    div(data-ng-if="!processingFunctions.length").text-center
+      div.alert-warning(uib-alert) No processing functions added yet.
+    div(data-ng-if="processingFunctions.length")
+      div(data-ng-repeat="function in processingFunctions")
+        div.panel.panel-info
+          div.panel-heading
+            div.form-group
+              label Processing Function Type
+              select.form-control(data-ng-options="val as info.name for (val, info) in functionTypes",data-ng-model="function.type")
+            div.row(data-ng-if="functionTypes[function.type].options.length")
+              div.panel.panel-default.col-xs-10.col-xs-offset-1.col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
+                div.panel-body
+                  div.form-group(data-ng-repeat="option in functionTypes[function.type].options")
+                    label {{ $index+1 }}. {{ optionKey(option) }}
+                    input.form-control(data-ng-if="!isArray(option[optionKey(option)])",type="{{ option[optionKey(option)] }}",data-ng-model="function[optionKey(option)].val")
+                    select.form-control(data-ng-if="isArray(option[optionKey(option)])",data-ng-options="val as val for val in option[optionKey(option)]",data-ng-model="function[optionKey(option)].val")

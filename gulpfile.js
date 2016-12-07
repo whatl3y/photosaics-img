@@ -45,7 +45,15 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('./public/css/'))
 })
 
-gulp.task('prep-always', ['app', 'styles'], function() {})
+gulp.task('fonts', function() {
+  return gulp.src([
+    './src/public/fonts/**/*.{eof,eot,svg,ttf,woff,woff2}',
+    './node_modules/bootstrap-sass/assets/fonts/**/*.{eof,eot,svg,ttf,woff,woff2}'
+  ])
+    .pipe(gulp.dest('./public/fonts/'))
+})
+
+gulp.task('prep-always', ['app', 'styles', 'fonts'], function() {})
 
 gulp.task('prep-dev', ['libs-dev', 'prep-always'], function() {})
 gulp.task('prep-prod', ['libs-prod', 'prep-always'], function() {})
