@@ -210,3 +210,13 @@ ul {
 .text-xxxlarge {
   font-size: 5em;
 }
+
+.panel-black {
+  border-color: #000000;
+
+  .panel-heading {
+    background-color: #000000;
+    border-color: #000000;
+    color: #FFFFFF;
+  }
+}

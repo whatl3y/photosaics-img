@@ -1,5 +1,6 @@
 import async_waterfall from 'async/waterfall'
 import * as lwip from 'lwip'
+import * as Jimp from 'jimp'
 import ImageHelpers from './ImageHelpers'
 
 export default class ImageProcessor extends ImageHelpers {
@@ -63,6 +64,9 @@ export default class ImageProcessor extends ImageHelpers {
         height = parseInt(commandParams.height || commandParams.h || width)
         return commandFunction(imageBuffer, width, height, callback)
         break
+      case 'g':
+        return commandFunction(imageBuffer, callback)
+        break
       case 'm':
         axis = (!commandParams) ? 'x' : (commandParams.axis || commandParams.a)
         return commandFunction(imageBuffer, axis, callback)
@@ -97,6 +101,7 @@ export default class ImageProcessor extends ImageHelpers {
     return {
       b: this.addBorderToBuffer.bind(this),
       c: this.cropImageToBuffer.bind(this),
+      g: this.grayscaleToBuffer.bind(this),
       m: this.mirrorToBuffer.bind(this),
       o: this.rotateToBuffer.bind(this),
       r: this.resizeToBuffer.bind(this),
@@ -184,6 +189,24 @@ export default class ImageProcessor extends ImageHelpers {
       },
       function(newLwipImage, _callback) {
         self.toBuffer(newLwipImage, _callback)
+      }
+    ],
+      function(err, newImageBuffer) {
+        return callback(err,newImageBuffer)
+      }
+    )
+  }
+
+  grayscaleToBuffer(image, callback) {
+    async_waterfall([
+      function(_callback) {
+        Jimp.read(image,_callback)
+      },
+      function(jimpImage,_callback) {
+        jimpImage.greyscale(_callback)
+      },
+      function(newJimpImage, _callback) {
+        newJimpImage.getBuffer(Jimp.MIME_PNG, _callback)
       }
     ],
       function(err, newImageBuffer) {

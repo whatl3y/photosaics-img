@@ -15,7 +15,10 @@ module.exports = [
   function(req,res) {
     const filename = req.s3_filename
     let s3Params = req.s3_params
-    if (s3Params) return s3.getObject(s3Params).createReadStream().pipe(res)
+    if (s3Params) {
+      s3.getObject(s3Params).createReadStream().pipe(res)
+      return log.info("Successfully delivered file already stored in s3:",s3Params)
+    }
 
     const splitFileInfo = filename.split('|')
     const commands = splitFileInfo[0]

@@ -46,6 +46,7 @@
     "gulp-sourcemaps": "^1.7.3",
     "gulp-uglify": "^1.2.0",
     "image-type": "^2.1.0",
+    "jimp": "^0.2.27",
     "lwip": "0.0.9",
     "minimist": "latest",
     "newrelic": "latest",
