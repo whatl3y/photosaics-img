@@ -26,7 +26,7 @@ const ExpressS3 = {
           }
         ],
           function(err,doesExist) {
-            if (err) return res.send(err.toString())
+            if (err) return res.status(500).send(err.toString())
 
             req.s3_filename = filename
             if (doesExist) req.s3_params = s3Params
@@ -34,10 +34,10 @@ const ExpressS3 = {
           }
         )
       } else {
-        return res.send('There was a problem parsing your URI. Please confirm you have no errors and try again.')
+        return res.status(500).send('There was a problem parsing your URI. Please confirm you have no errors and try again.')
       }
     } else {
-      return res.send('Invalid path. Please ensure your path is in the format /:command/:parameters/:url_to_image')
+      return res.status(500).send('Invalid path. Please ensure your path is in the format /:command/:parameters/:url_to_image')
     }
   },
 

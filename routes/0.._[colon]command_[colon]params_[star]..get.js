@@ -58,7 +58,7 @@ module.exports = [
     ],
       function(err,result) {
         if (err) {
-          res.send(`There was an error processing your image: ${err.toString()}`)
+          res.status(500).send(`There was an error processing your image: ${err.toString()}`)
           return log.error("Error processing and sending file:",err,filename)
         }
         log.info(`Successfully delivered file: ${filename}`)
