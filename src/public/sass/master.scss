@@ -48,6 +48,15 @@ ul {
   cursor: pointer;
 }
 
+.center-everything {
+  text-align: center;
+
+  * {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
 .sync-loader {
   position: fixed;
   z-index: 9;

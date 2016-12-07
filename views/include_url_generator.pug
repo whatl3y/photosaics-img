@@ -12,14 +12,14 @@ div.panel.panel-default
         button.btn.btn-default(data-ng-click="updateAryLength('processingFunctions','dec')")
           span(class="glyphicon glyphicon-minus")
     div(data-ng-if="!processingFunctions.length").text-center
-      div.alert-warning(uib-alert) No processing functions added yet.
+      div.alert-warning(uib-alert) No processing functions added.
     div(data-ng-if="processingFunctions.length")
       div(data-ng-repeat="function in processingFunctions")
         div.panel.panel-info
           div.panel-heading
             div.form-group
               label Processing Function Type
-              select.form-control(data-ng-options="val as info.name for (val, info) in functionTypes",data-ng-model="function.type")
+              select.form-control(data-ng-options="val as '(' + val + ') ' + info.name for (val, info) in functionTypes",data-ng-model="function.type")
             div.row(data-ng-if="functionTypes[function.type].options.length")
               div.panel.panel-default.col-xs-10.col-xs-offset-1.col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
                 div.panel-body
@@ -27,3 +27,16 @@ div.panel.panel-default
                     label {{ $index+1 }}. {{ optionKey(option) }}
                     input.form-control(data-ng-if="!isArray(option[optionKey(option)])",type="{{ option[optionKey(option)] }}",data-ng-model="function[optionKey(option)].val")
                     select.form-control(data-ng-if="isArray(option[optionKey(option)])",data-ng-options="val as val for val in option[optionKey(option)]",data-ng-model="function[optionKey(option)].val")
+div.panel(data-ng-class="(validateError) ? 'panel-danger' : 'panel-success'")
+  div.panel-heading
+    div Generated URL &amp; Image
+  div.panel-body
+    div(data-ng-if="!validateError")
+      pre {{ generatedUrl }}
+      div
+        small
+          strong NOTE: If you don't see the final image preview below, please confirm you have the correct URL for the image in the Image URL above.
+      div.center-everything
+        img.img-responsive.img-thumbnail(data-ng-src="{{ generatedUrl }}")
+    div(data-ng-if="validateError")
+      div.alert-warning(uib-alert,style="margin-bottom:0px") Error: {{ validateError }}
