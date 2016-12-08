@@ -3,7 +3,16 @@ div
   h1 1. Enter Image URL
 div.form-group
   - //label Image URL (be sure to include the protocol [http:// or https://])
-  input.form-control.input-lg(type="text",data-ng-model="imageUrl",placeholder="Image URL...")
+  div.row
+    div.col-xs-12.margin-bottom-medium
+      input.form-control.input-lg(type="text",data-ng-model="imageUrl",placeholder="Image URL...")
+    div.col-xs-8.col-xs-offset-2.col-sm-4.col-sm-offset-4(data-ng-if="imageUrl")
+      div.panel.panel-default
+        div.panel-body(style="padding:5px")
+          div
+            small
+              small Original
+          img.img-responsive(data-ng-src="{{ imageUrl }}")
 div
   h1 2. Process the Image
 div.panel.panel-default
