@@ -1,6 +1,7 @@
 export default class GlobalController {
-  constructor($scope) {
+  constructor($scope, $http) {
     this._scope = $scope
+    this._http = $http
 
     this._scope.optionKey = this.optionKey.bind(this)
     this._scope.isArray = this.isArray.bind(this)
@@ -30,6 +31,7 @@ export default class GlobalController {
   }
 
   generateUrl(imageUrl, settings) {
+    if (this.isLoadingGenerated) return true
     const encodedFunctions = settings.map((s) => s.type).join('') || '*'
     let encodedSettings = {}
 
@@ -44,8 +46,28 @@ export default class GlobalController {
       }
     })
     encodedSettings = (Object.keys(encodedSettings).length) ? encodeURIComponent(JSON.stringify(encodedSettings)) : '*'
+    const generatedUrl = `${this.baseUrl}/${encodedFunctions}/${encodedSettings}/${imageUrl}`
+    if (generatedUrl === this._scope.generatedUrl) return true
 
-    this._scope.generatedUrl = `${this.baseUrl}/${encodedFunctions}/${encodedSettings}/${imageUrl}`
+    delete(this._scope.final)
+    this.isLoadingGenerated = true
+    this._http.get(generatedUrl)
+    .success((res) => {
+      this._scope.generatedUrl = generatedUrl
+      this._scope.final = {
+        valid: true,
+        url: generatedUrl
+      }
+      delete(this.isLoadingGenerated)
+    })
+    .error((data) => {
+      this._scope.generatedUrl = generatedUrl
+      this._scope.final = {
+        valid: false,
+        error: data.toString()
+      }
+      delete(this.isLoadingGenerated)
+    })
   }
 
   validateImageSettings() {
