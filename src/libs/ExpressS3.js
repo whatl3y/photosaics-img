@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import ApiHandler from './ApiHandler'
 import AwsS3 from './AwsS3'
 import ImageProcessor from './ImageProcessor'
 import * as config from '../config'
@@ -12,7 +13,13 @@ const ExpressS3 = {
   checkObjectMiddleware: function(req, res, next) {
     const command = req.params.command
     const params = req.params.params
-    const url = req.params[0]
+    let url = req.params[0]
+
+    // If the url has a query string, append it to the URL since
+    // it isn't included in the params[0] wildcard object from express
+    if (Object.keys(req.query).length > 0) {
+      url += `?${ApiHandler.serialize(req.query)}`
+    }
 
     if (ExpressS3.isValidParams(command, params, url)) {
       const filename = ExpressS3.parseObjectName(command, params, url)
