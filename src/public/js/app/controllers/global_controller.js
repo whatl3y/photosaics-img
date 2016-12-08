@@ -14,24 +14,63 @@ export default class GlobalController {
     this.baseUrl = `${location.protocol}//${location.host}`
     this._scope.processingFunctions = []
     this._scope.functionTypes = {
-      b: {name: 'Add Border', options: [{length:'number'}]},
-      c: {name: 'Crop Image', options: [{width:'number'}, {height:'number'}]},
-      g: {name: 'Make Image Grayscale (desaturate)', options: []},
-      m: {name: 'Mirror Image over an axis', options: [{axis: ['x', 'y', 'xy']}]},
-      o: {name: 'Rotate Image (clockwise)', options: [{degrees: 'number'}]},
-      r: {name: 'Resize Image', options: [{width:'number'}, {height:'number'}]},
-      s: {name: 'Resize Image of specified width, having same width:height ratio', options: [{width: 'number'}]},
-      q: {name: 'Make image square by cropping from the middle outward', options: []}
+      b: {
+        name: 'Add Border',
+        options: [
+          {length: {type: 'number', required: true}},
+          {color: {type: ['black', 'blue', 'green', 'orange', 'red', 'yellow', 'white'], required: false}}
+        ]
+      },
+      c: {
+        name: 'Crop Image',
+        options: [
+          {left: {type: 'number', required: true}},
+          {top: {type: 'number', required: false}},
+          {right: {type: 'number', required: false}},
+          {bottom: {type: 'number', required: false}}
+        ]
+      },
+      g: {
+        name: 'Grayscale Image (desaturate)',
+        options: []
+      },
+      m: {
+        name: 'Mirror Image over an axis',
+        options: [{axis: {type: ['x', 'y', 'xy'], required: true}}]
+      },
+      o: {
+        name: 'Rotate Image (clockwise)',
+        options: [
+          {degrees: {type: 'number', required: true}}
+        ]
+      },
+      r: {
+        name: 'Resize Image',
+        options: [
+          {width: {type: 'number', required: true}},
+          {height: {type: 'number', required: true}}
+        ]
+      },
+      s: {
+        name: 'Resize Image of specified width, having same width:height ratio',
+        options: [
+          {width: {type: 'number', required: true}}
+        ]
+      },
+      q: {
+        name: 'Make image square by cropping from the middle outward',
+        options: []
+      }
     }
 
     this.validateImageSettings()
-    setInterval(() => this._scope.$apply(() => this.validateImageSettings()),1000)
+    setInterval(() => this._scope.$apply(() => this.validateImageSettings()),250)
     // this._scope.$watch(this._scope.imageUrl, (i) => this.validateImageSettings())
     // this._scope.$watch(this._scope.processingFunctions, (i) => this.validateImageSettings())
   }
 
   generateUrl(imageUrl, settings) {
-    if (this.isLoadingGenerated) return true
+    if (this._scope.isValidatingGeneratedUrl) return true
     const encodedFunctions = settings.map((s) => s.type).join('') || '*'
     let encodedSettings = {}
 
@@ -41,7 +80,9 @@ export default class GlobalController {
       if (typeConfig) {
         typeConfig.options.forEach((o) => {
           const key = Object.keys(o)[0]
-          encodedSettings[s.type][key] = s[key].val
+          if (s[key] && (s[key].val || s[key].val === 0)) {
+            encodedSettings[s.type][key] = s[key].val
+          }
         })
       }
     })
@@ -49,24 +90,23 @@ export default class GlobalController {
     const generatedUrl = `${this.baseUrl}/${encodedFunctions}/${encodedSettings}/${imageUrl}`
     if (generatedUrl === this._scope.generatedUrl) return true
 
+    this._scope.generatedUrl = generatedUrl
     delete(this._scope.final)
-    this.isLoadingGenerated = true
+    this._scope.isValidatingGeneratedUrl = true
     this._http.get(generatedUrl)
     .success((res) => {
-      this._scope.generatedUrl = generatedUrl
       this._scope.final = {
         valid: true,
         url: generatedUrl
       }
-      delete(this.isLoadingGenerated)
+      delete(this._scope.isValidatingGeneratedUrl)
     })
     .error((data) => {
-      this._scope.generatedUrl = generatedUrl
       this._scope.final = {
         valid: false,
         error: data.toString()
       }
-      delete(this.isLoadingGenerated)
+      delete(this._scope.isValidatingGeneratedUrl)
     })
   }
 
@@ -88,7 +128,7 @@ export default class GlobalController {
       if (typeConfig) {
         typeConfig.options.forEach((o) => {
           const key = Object.keys(o)[0]
-          if (!setting[key] || (!setting[key].val && setting[key].val !== 0)) {
+          if (o[key].required && (!setting[key] || (!setting[key].val && setting[key].val !== 0))) {
             isValid = false
           }
         })

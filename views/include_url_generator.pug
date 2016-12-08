@@ -2,13 +2,13 @@
 div
   h1 1. Enter Image URL
 div.form-group
-  label Image URL (be sure to include the protocol [http:// or https://])
+  - //label Image URL (be sure to include the protocol [http:// or https://])
   input.form-control.input-lg(type="text",data-ng-model="imageUrl",placeholder="Image URL...")
 div
   h1 2. Process the Image
 div.panel.panel-default
   div.panel-body
-    div.text-large Processing Functions
+    - //div.text-large Processing Functions
     div.form-group.text-center
       div.btn-group
         button.btn.btn-default(data-ng-click="updateAryLength('processingFunctions')")
@@ -29,18 +29,23 @@ div.panel.panel-default
                 div.panel-body
                   div.form-group(data-ng-repeat="option in functionTypes[function.type].options")
                     label {{ $index+1 }}. {{ optionKey(option) }}
-                    input.form-control(data-ng-if="!isArray(option[optionKey(option)])",type="{{ option[optionKey(option)] }}",data-ng-model="function[optionKey(option)].val")
-                    select.form-control(data-ng-if="isArray(option[optionKey(option)])",data-ng-options="val as val for val in option[optionKey(option)]",data-ng-model="function[optionKey(option)].val")
+                      small  (required: {{ option[optionKey(option)].required }})
+                    input.form-control(data-ng-if="!isArray(option[optionKey(option)].type)",type="{{ option[optionKey(option)].type }}",data-ng-model="function[optionKey(option)].val")
+                    select.form-control(data-ng-if="isArray(option[optionKey(option)].type)",data-ng-options="val as val for val in option[optionKey(option)].type",data-ng-model="function[optionKey(option)].val")
 div
-  h1 3. Preview New Image!
-div.panel(data-ng-class="(validateError) ? 'panel-danger' : 'panel-success'")
-  div.panel-heading
-    div Generated URL &amp; Image
+  h1 3. Use Your New Image!
+- //div.panel(data-ng-class="(validateError) ? 'panel-danger' : 'panel-success'")
+div
+  - //div.panel-heading
+    - //div Generated URL &amp; Image
   div.panel-body
-    div(data-ng-if="!validateError")
-      pre.text-xlarge(data-ng-if="final.valid") {{ generatedUrl }}
-      div.center-everything
-        div.alert-warning(uib-alert,data-ng-if="final && !final.valid",style="margin-bottom:0px") There was an error getting your image. Please make sure it's a valid image URL and try again. (Error: {{ final.error }})
+    div.center-everything(data-ng-if="!validateError")
+      div.panel.panel-primary
+        div.panel-heading.wordwrap
+          div {{ generatedUrl }}
+      loader(style="max-width:100px",data-ng-if="isValidatingGeneratedUrl")
+      div.center-everything(data-ng-if="!isValidatingGeneratedUrl")
+        div.alert-warning(uib-alert,data-ng-if="final && !final.valid",style="margin-bottom:0px") Please make sure it's a valid image URL and try again. (Info: {{ final.error }})
         img.img-responsive.img-thumbnail(data-ng-if="final.valid",data-ng-src="{{ final.url }}")
     div(data-ng-if="validateError")
       div.alert-danger(uib-alert,style="margin-bottom:0px") Error: {{ validateError }}

@@ -47,9 +47,13 @@ export default class ImageProcessor extends ImageHelpers {
     let axis
     let color
     let degrees
+    let topOrHeight
     let height
+    let leftOrWidth
     let width
     let length
+    let right
+    let bottom
 
     switch(commandKey) {
       case 'b':
@@ -60,9 +64,11 @@ export default class ImageProcessor extends ImageHelpers {
         break
       case 'c':
         if (!commandParams) return this.noopProcessFunction(imageBuffer, callback)
-        width = parseInt(commandParams.width || commandParams.w || commandParams.length || commandParams.l)
-        height = parseInt(commandParams.height || commandParams.h || width)
-        return commandFunction(imageBuffer, width, height, callback)
+        leftOrWidth = parseInt(commandParams.width || commandParams.w || commandParams.length || commandParams.l || commandParams.left)
+        topOrHeight = parseInt(commandParams.height || commandParams.h || commandParams.top || commandParams.t || width)
+        right = parseInt(commandParams.right || commandParams.r)
+        bottom = parseInt(commandParams.bottom || commandParams.b)
+        return commandFunction(imageBuffer, leftOrWidth, topOrHeight, right, bottom, callback)
         break
       case 'g':
         return commandFunction(imageBuffer, callback)
@@ -156,28 +162,45 @@ export default class ImageProcessor extends ImageHelpers {
   cropImageToBuffer(...args) {
     const self = this
     let image = this._image
-    let width
-    let height
+    let leftOrWidth
+    let topOrHeight
+    let right
+    let bottom
     let callback
     switch (args.length) {
+      case 6:
+        image = args[0]
+        leftOrWidth = args[1]
+        topOrHeight = args[2]
+        right = args[3]
+        bottom = args[4]
+        callback = args[5]
+        break
       case 4:
         image = args[0]
-        width = args[1]
-        height = args[2]
+        leftOrWidth = args[1]
+        topOrHeight = args[2]
         callback = args[3]
         break
       case 3:
-        width = args[0]
-        height = args[1]
+        leftOrWidth = args[0]
+        topOrHeight = args[1]
         callback = args[2]
         break
       case 2:
-        width = args[0]
-        height = width
+        leftOrWidth = args[0]
+        topOrHeight = leftOrWidth
         callback = args[1]
         break
       default:
         return new Error('No callback provided.')
+    }
+
+    // Validate options
+    if (typeof leftOrWidth !== 'number' || leftOrWidth == NaN) {
+      return callback(new Error('Invalid crop configuration. Please add a valid left, top, right, bottom config, or width and height.'))
+    } else if (!right && !bottom && (leftOrWidth === 0 || topOrHeight === 0)) {
+      return callback(new Error('Invalid crop configuration. If bottom and right are not provided, width and height must be > 0.'))
     }
 
     async_waterfall([
@@ -185,7 +208,13 @@ export default class ImageProcessor extends ImageHelpers {
         self.open(image, _callback)
       },
       function(openedImage,_callback) {
-        openedImage.crop(width, height, _callback)
+        topOrHeight = topOrHeight || leftOrWidth
+        if (right || bottom) {
+          right = right || openedImage.width()
+          bottom = bottom || openedImage.height()
+          return openedImage.crop(leftOrWidth, topOrHeight, right, bottom, _callback)
+        }
+        return openedImage.crop(leftOrWidth, topOrHeight, _callback)
       },
       function(newLwipImage, _callback) {
         self.toBuffer(newLwipImage, _callback)
