@@ -32,7 +32,7 @@ div.panel.panel-default
                     input.form-control(data-ng-if="!isArray(option[optionKey(option)])",type="{{ option[optionKey(option)] }}",data-ng-model="function[optionKey(option)].val")
                     select.form-control(data-ng-if="isArray(option[optionKey(option)])",data-ng-options="val as val for val in option[optionKey(option)]",data-ng-model="function[optionKey(option)].val")
 div
-  h1 3. See Preview New Image!
+  h1 3. Preview New Image!
 div.panel(data-ng-class="(validateError) ? 'panel-danger' : 'panel-success'")
   div.panel-heading
     div Generated URL &amp; Image
