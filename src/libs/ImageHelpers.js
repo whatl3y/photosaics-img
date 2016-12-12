@@ -1,7 +1,7 @@
 import async_parallel from 'async/parallel'
 import async_reduce from 'async/reduce'
 import async_waterfall from 'async/waterfall'
-import async_each from 'async/each'
+import async_times from 'async/times'
 import * as fs from 'fs'
 // import * as imagetype from 'image-type'
 const imageType = require('image-type')
@@ -39,7 +39,13 @@ export default class ImageHelpers {
     }
 
     if (typeof image === 'object' && image != null && image.toString() === '[object Object]') return callback(null,image)
-    if (image instanceof Buffer) return lwip.open(image, imageType(image).ext, callback)
+    if (image instanceof Buffer) {
+      const ty = imageType(image)
+      if (typeof ty === 'object' && ty !== null) {
+        return lwip.open(image, ty.ext, callback)
+      }
+      return callback(new Error(`Invalid image type.`))
+    }
     if (imgType) return lwip.open(image, imgType, callback)
     if (typeof image === 'string' && (image.indexOf('http://') === 0 || image.indexOf('https://') === 0)) {
       async_waterfall([
@@ -453,6 +459,7 @@ export default class ImageHelpers {
         break
       case 1:
         callback = args[0]
+        break
       default:
         return new Error('No callback provided.')
     }
@@ -520,6 +527,7 @@ export default class ImageHelpers {
         break
       case 1:
         callback = args[0]
+        break
       default:
         return new Error('No callback provided.')
     }
@@ -536,6 +544,65 @@ export default class ImageHelpers {
     ],
       function(err, data, buffer) {
         return callback(err, data, buffer)
+      }
+    )
+  }
+
+  convertImageToTransparent(...args) {
+    const self = this
+    let image = this._image
+    let color = '#fff'
+    let callback
+    switch (args.length) {
+      case 3:
+        image = args[0]
+        color = args[1]
+        callback = args[2]
+        break
+      case 2:
+        color = args[0]
+        callback = args[1]
+        break
+      case 1:
+        callback = args[0]
+        break
+      default:
+        return new Error('No callback provided.')
+    }
+
+    let batch
+    async_waterfall([
+      function(_callback) {
+        self.open(image, _callback)
+      },
+      function(openedImage, _callback) {
+        batch = image.batch()
+        self.dimensions(openedImage, _callback)
+      },
+      function(widthHeight, _callback) {
+        const third = 33.333
+        const oColor = ImageHelpers.hexToRgb(color)
+        const width = widthHeight[0]
+        const height = widthHeight[1]
+        new Array(width).fill(0).map((z,_i) => _i).forEach((_wi) => {
+          new Array(height).fill(0).map((_z,__i) => __i).forEach((_hi) => {
+            const pixelColor = image.getPixel(_wi, _hi)
+            let newPixelColor = {r: pixelColor.r, g: pixelColor.g, b: pixelColor.b, a:pixelColor.a}
+            if (Math.abs(pixelColor.r - oColor.r) <= 12) newPixelColor.a -= third
+            if (Math.abs(pixelColor.g - oColor.g) <= 12) newPixelColor.a -= third
+            if (Math.abs(pixelColor.b - oColor.b) <= 12) newPixelColor.a -= third
+            if (newPixelColor.a !== pixelColor.a) {
+              newPixelColor.a = (newPixelColor.a <= 0) ? 0 : Math.round(newPixelColor.a)
+              batch.setPixel(_wi, _hi, newPixelColor)
+            }
+          })
+        })
+        _callback()
+      }
+    ],
+      function(err) {
+        if (err) return callback(err)
+        batch.exec(callback)
       }
     )
   }
@@ -581,6 +648,7 @@ export default class ImageHelpers {
   }
 
   static hexToRgb(hexColor='#000000') {
+    if (typeof hexColor !== 'string') return hexColor
     hexColor = ImageHelpers.hexToSix(hexColor)
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor)
     return result ? {
@@ -610,6 +678,13 @@ export default class ImageHelpers {
       return '#' + hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
     }
     return hex
+  }
+
+  static isValidHexColor(color) {
+    if (typeof color === 'string') {
+      return /(^#?[0-9A-F]{6}$)|(^#?[0-9A-F]{3}$)/i.test(color)
+    }
+    return false
   }
 
   static noop() {}

@@ -33,6 +33,7 @@ div.panel.panel-default
             div.form-group
               label Processing Function Type
               select.form-control(data-ng-options="val as '(' + val + ') ' + info.name for (val, info) in functionTypes",data-ng-model="function.type")
+            div.alert-warning(uib-alert,data-ng-if="functionTypes[function.type].warning") {{ functionTypes[function.type].warning }}
             div.row(data-ng-if="functionTypes[function.type].options.length")
               div.panel.panel-default.col-xs-10.col-xs-offset-1.col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
                 div.panel-body

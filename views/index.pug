@@ -16,7 +16,10 @@ block main
           li Get the URL of an image on the internet
           li Determine how you want to process the image
           li Create a URL using the URL-generator below
-          li Download the new image or put the created URL in your img tags' src="" attribute!
+          li
+            div Download the new image or put the created URL in your img tags' src="" attribute!
+            div
+              small (All processed images are stored in AWS S3, so retrieval on subsequent loads occurs much faster then the first time the image is processed.)
       div.col-xs-12.col-md-6
         div.panel.panel-black
           div.panel-heading
@@ -90,6 +93,10 @@ block main
                 div
                   strong s (resize same ratio):
                   span  Resize the image to a specified width (in pixels) keeping the same width:height ratio.
+              li
+                div
+                  strong t (color to transparent):
+                  span  Changes the specified color in the image to become transparent.
               li
                 div
                   strong q (make square):

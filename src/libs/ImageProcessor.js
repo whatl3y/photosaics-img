@@ -59,8 +59,9 @@ export default class ImageProcessor extends ImageHelpers {
       case 'b':
         if (!commandParams) return this.noopProcessFunction(imageBuffer, callback)
         length = parseInt(commandParams.length || commandParams.l || commandParams.width || commandParams.w)
-        color = commandParams.color || commandParams.c || 'black'
-        return commandFunction(imageBuffer, length, color, callback)
+        color = commandParams.color || commandParams.c || '#000000'
+        if (ImageProcessor.isValidHexColor(color)) return commandFunction(imageBuffer, length, color, callback)
+        return callback(new Error(`Invalid color, please ensure you have a valid 3 or 6-digit hex color and try again.`))
         break
       case 'c':
         if (!commandParams) return this.noopProcessFunction(imageBuffer, callback)
@@ -93,6 +94,12 @@ export default class ImageProcessor extends ImageHelpers {
         length = parseInt(commandParams.length || commandParams.l || commandParams.width || commandParams.w)
         return commandFunction(imageBuffer, length, callback)
         break
+      case 't':
+        if (!commandParams) return this.noopProcessFunction(imageBuffer, callback)
+        color = commandParams.color || commandParams.c
+        if (ImageProcessor.isValidHexColor(color)) return commandFunction(imageBuffer, color, callback)
+        return callback(new Error(`Invalid color, please ensure you have a valid 3 or 6-digit hex color and try again.`))
+        break
       case 'q':
         return commandFunction(imageBuffer, callback)
         break
@@ -112,6 +119,7 @@ export default class ImageProcessor extends ImageHelpers {
       o: this.rotateToBuffer.bind(this),
       r: this.resizeToBuffer.bind(this),
       s: this.resizeSameRatioToBuffer.bind(this),
+      t: this.colorToTransparentToBuffer.bind(this),
       q: this.squareToBuffer.bind(this)
     }
   }
@@ -120,7 +128,7 @@ export default class ImageProcessor extends ImageHelpers {
     const self = this
     let image = this._image
     let length
-    let color = 'black'
+    let color = '#000'
     let callback
     switch (args.length) {
       case 4:
@@ -141,6 +149,8 @@ export default class ImageProcessor extends ImageHelpers {
       default:
         return new Error('No callback provided.')
     }
+
+    color = ImageProcessor.hexToRgb(color)
 
     async_waterfall([
       function(_callback) {
@@ -361,6 +371,26 @@ export default class ImageProcessor extends ImageHelpers {
     async_waterfall([
       function(_callback) {
         self.resizeSameRatio(image, newWidth, _callback)
+      },
+      function(newLwipImage, _callback) {
+        self.toBuffer(newLwipImage, _callback)
+      }
+    ],
+      function(err, newImageBuffer) {
+        return callback(err,newImageBuffer)
+      }
+    )
+  }
+
+  colorToTransparentToBuffer(image, color, callback) {
+    const self = this
+    image = image || this._image
+    async_waterfall([
+      function(_callback) {
+        self.open(image, _callback)
+      },
+      function(openedImage, _callback) {
+        self.convertImageToTransparent(openedImage, color, _callback)
       },
       function(newLwipImage, _callback) {
         self.toBuffer(newLwipImage, _callback)

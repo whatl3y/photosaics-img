@@ -18,7 +18,7 @@ export default class GlobalController {
         name: 'Add Border',
         options: [
           {length: {type: 'number', required: true}},
-          {color: {type: ['black', 'blue', 'green', 'orange', 'red', 'yellow', 'white'], required: false}}
+          {color: {type: 'text', required: false}}
         ]
       },
       c: {
@@ -55,6 +55,13 @@ export default class GlobalController {
         name: 'Resize Image of specified width, having same width:height ratio',
         options: [
           {width: {type: 'number', required: true}}
+        ]
+      },
+      t: {
+        name: 'Makes the specified color (hex value) to become transparent.',
+        warning: 'This operation can take a little time to complete. After it is finished processing retrieval from AWS S3 will be fast.',
+        options: [
+          {color: {type: 'text', required: true}}
         ]
       },
       q: {
