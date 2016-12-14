@@ -2,18 +2,30 @@ import * as fs from 'fs'
 import ApiHandler from './ApiHandler'
 import AwsS3 from './AwsS3'
 import ImageProcessor from './ImageProcessor'
+import Encryption from './Encryption'
 import * as config from '../config'
 import async_waterfall from 'async/waterfall'
 
 export { ExpressS3 as default }
 
-var s3 = new AwsS3()
+const enc = new Encryption()
+const s3 = new AwsS3()
 
 const ExpressS3 = {
   checkObjectMiddleware: function(req, res, next) {
     const command = req.params.command
-    const params = req.params.params
     let url = req.params[0]
+    let params
+
+    try {
+      params = req.params.params
+      if (params !== '*') {
+        params = enc.decrypt(params)
+      }
+    } catch(e) {
+      console.log("Error decrypting:",e)
+      return res.status(500).send("Please make sure you have to correct URL and try again.")
+    }
 
     // If the url has a query string, append it to the URL since
     // it isn't included in the params[0] wildcard object from express
@@ -22,7 +34,8 @@ const ExpressS3 = {
     }
 
     if (ExpressS3.isValidParams(command, params, url)) {
-      const filename = ExpressS3.parseObjectName(command, params, url)
+      let filename, oParams
+      [filename, oParams] = ExpressS3.parseObjectName(command, params, url)
 
       if (filename) {
         const bucket = config.aws.s3.bucket
@@ -36,6 +49,7 @@ const ExpressS3 = {
             if (err) return res.status(500).send(err.toString())
 
             req.s3_filename = filename
+            req.parsedObjectParams = oParams
             if (doesExist) req.s3_params = s3Params
             return next()
           }
@@ -70,7 +84,8 @@ const ExpressS3 = {
           delete(parsedParams[_command])
         }
       }
-      return `${commands}|${encodeURIComponent(JSON.stringify(parsedParams))}|${url.replace('://','___')}`
+      const paramsHash = enc.encrypt(encodeURIComponent(JSON.stringify(parsedParams)))
+      return [`${commands}|${paramsHash}|${url.replace('://','___')}`, parsedParams]
 
     } catch(err) {
       console.log("Error parsing info:",err,command,params,url)
@@ -81,8 +96,10 @@ const ExpressS3 = {
   parseParams(params) {
     let parsedParams
     try {
-      parsedParams = JSON.parse(params)
+      if (params === '*') return {}
+      parsedParams = JSON.parse(decodeURIComponent(params))
     } catch(e) {
+      console.log(`Error parsing params: ${e}`)
       parsedParams = {}
     }
     return parsedParams

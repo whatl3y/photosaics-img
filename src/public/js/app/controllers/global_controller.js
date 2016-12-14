@@ -71,7 +71,7 @@ export default class GlobalController {
     }
 
     this.validateImageSettings()
-    setInterval(() => this._scope.$apply(() => this.validateImageSettings()),250)
+    setInterval(() => this._scope.$apply(() => this.validateImageSettings()),400)
     // this._scope.$watch(this._scope.imageUrl, (i) => this.validateImageSettings())
     // this._scope.$watch(this._scope.processingFunctions, (i) => this.validateImageSettings())
   }
@@ -93,26 +93,38 @@ export default class GlobalController {
         })
       }
     })
+
     encodedSettings = (Object.keys(encodedSettings).length) ? encodeURIComponent(JSON.stringify(encodedSettings)) : '*'
-    const generatedUrl = `${this.baseUrl}/${encodedFunctions}/${encodedSettings}/${imageUrl}`
+    let generatedUrl = `${this.baseUrl}/${encodedFunctions}/*/${imageUrl}`
     if (generatedUrl === this._scope.generatedUrl) return true
 
-    this._scope.generatedUrl = generatedUrl
-    delete(this._scope.final)
-    this._scope.isValidatingGeneratedUrl = true
-    this._http.get(generatedUrl)
+    this._http.get(`/api/serialize/${btoa(encodedSettings)}`)
     .success((res) => {
-      this._scope.final = {
-        valid: true,
-        url: generatedUrl
-      }
-      delete(this._scope.isValidatingGeneratedUrl)
+      this._scope.serializedSettings = (encodedSettings === '*') ? '*' : res.string
+      generatedUrl = `${this.baseUrl}/${encodedFunctions}/${this._scope.serializedSettings}/${imageUrl}`
+      if (generatedUrl === this._scope.generatedUrl) return true
+
+      this._scope.generatedUrl = generatedUrl
+      delete(this._scope.final)
+      this._scope.isValidatingGeneratedUrl = true
+      this._http.get(generatedUrl)
+      .success((res) => {
+        this._scope.final = {
+          valid: true,
+          url: generatedUrl
+        }
+        delete(this._scope.isValidatingGeneratedUrl)
+      })
+      .error((data) => {
+        this._scope.final = {
+          valid: false,
+          error: data.toString()
+        }
+        delete(this._scope.isValidatingGeneratedUrl)
+      })
     })
     .error((data) => {
-      this._scope.final = {
-        valid: false,
-        error: data.toString()
-      }
+      console.log("Error",data)
       delete(this._scope.isValidatingGeneratedUrl)
     })
   }

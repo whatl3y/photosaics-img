@@ -20,9 +20,10 @@ module.exports = [
       return log.info("Successfully delivered file already stored in s3:",s3Params)
     }
 
+    const params = req.parsedObjectParams
     const splitFileInfo = filename.split('|')
     const commands = splitFileInfo[0]
-    const params = JSON.parse(decodeURIComponent(splitFileInfo[1]))
+    const paramsHash = splitFileInfo[1]
     const url = splitFileInfo[2].replace('___','://')
 
     const processor = new ImageProcessor(url)
