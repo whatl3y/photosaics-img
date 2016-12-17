@@ -31,7 +31,12 @@ div.panel.panel-default
         div.panel.panel-info
           div.panel-heading
             div.form-group
-              label Processing Function Type
+              div.row.no-gutters
+                div.col-xs-9.col-sm-6
+                  label {{ $index+1 }}. Function Type
+                div.col-xs-3.col-sm-6.text-right
+                  a(href="javascript:void(0)",data-ng-click="processingFunctions.splice(processingFunctions.indexOf(function),1)")
+                    strong X
               select.form-control(data-ng-options="val as '(' + val + ') ' + info.name for (val, info) in functionTypes",data-ng-model="function.type")
             div.alert-warning(uib-alert,data-ng-if="functionTypes[function.type].warning") {{ functionTypes[function.type].warning }}
             div.row(data-ng-if="functionTypes[function.type].options.length")
