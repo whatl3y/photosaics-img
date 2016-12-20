@@ -13,6 +13,14 @@ div.form-group
             small
               small Original
           img.img-responsive(data-ng-src="{{ imageUrl }}")
+    div.col-xs-12
+      div.row.text-center
+        div.col-xs-12.separate-vert-small
+          small or
+        div.col-xs-12
+          button.needsclick.btn.btn-lg.btn-primary(onclick="document.getElementById('upload-image-file').click()") Upload Image
+          input#upload-image-file(style="display:none",type="file")
+hr
 div
   h1 2. Process the Image
 div.panel.panel-default

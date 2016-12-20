@@ -5,6 +5,8 @@ var fs = require('fs')
 var express = require('express')
 var app = express()
 var cluster = require('cluster')
+var formidable = require('express-formidable')
+var bodyParser = require('body-parser')
 var redis = require('redis')
 var path = require('path')
 var async = require('async')
@@ -84,6 +86,10 @@ function main(notClustering) {
       //template engine setup
       app.set('views', path.join(__dirname, 'views'))
       app.set('view engine', 'pug')
+
+      app.use(bodyParser.urlencoded({extended:true, limit:'10mb'}))
+      app.use(bodyParser.json({limit:'1mb'}))
+      app.use(formidable.parse())
 
       //static files
       app.use('/public',express.static(path.join(__dirname,'/public')))

@@ -1,7 +1,8 @@
 export default class GlobalController {
-  constructor($scope, $http) {
+  constructor($scope, $http, uiUploader) {
     this._scope = $scope
     this._http = $http
+    this._uploader = uiUploader
 
     this._scope.optionKey = this.optionKey.bind(this)
     this._scope.isArray = this.isArray.bind(this)
@@ -74,6 +75,53 @@ export default class GlobalController {
     setInterval(() => this._scope.$apply(() => this.validateImageSettings()),400)
     // this._scope.$watch(this._scope.imageUrl, (i) => this.validateImageSettings())
     // this._scope.$watch(this._scope.processingFunctions, (i) => this.validateImageSettings())
+
+    this.bindEventHandlers()
+  }
+
+  bindEventHandlers() {
+    this.imageElement = document.getElementById('upload-image-file')
+    if (!this.imageElement) {
+      return setTimeout(() => this.bindEventHandlers(), 250)
+    }
+    this.imageElement.addEventListener('change', this.addUploadFile.bind(this))
+  }
+
+  addUploadFile(ev) {
+    const self = this
+    const files = ev.target.files
+    this._uploader.addFiles(files)
+    this._uploader.startUpload({
+      url: '/api/upload',
+      data: {},
+      concurrency: 2,
+      onProgress: function(file) {
+        // file contains a File object
+        console.log("PROGRESS",file)
+      },
+      onError: function(err) {
+        console.log("ERROR",err)
+      },
+      onCompleted: function(file, response, status, xhr) {
+        // file contains a File object
+        // console.log(file);
+        // response contains the server response
+        console.log("RESPONSE",file,response,status,xhr)
+        var doSomething = function(xhr) {
+          if (!xhr.response) {
+            return setTimeout(() => doSomething(xhr),500)
+          }
+          self._scope.imageUrl = `${self.baseUrl}/file/s3/${JSON.parse(xhr.response).filename}`
+          self._scope.$apply()
+        }
+        doSomething(xhr)
+      },
+      onCompletedAll: function(files) {
+        // files is an array of File objects
+        console.log("COMPLETED",files)
+      }
+    })
+    ev.target.value = ''
   }
 
   generateUrl(imageUrl, settings) {
