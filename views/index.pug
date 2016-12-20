@@ -1,7 +1,8 @@
 extends layout
 
 block main
-  div.container
+  div.container(data-ng-cloak)
+    syncloader(data-ng-if="loadingSync")
     div.row
       div.col-xs-12.text-center
         h1 Instant Image Processing

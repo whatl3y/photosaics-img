@@ -89,6 +89,8 @@ export default class GlobalController {
 
   addUploadFile(ev) {
     const self = this
+
+    this._scope.loadingSync = true
     const files = ev.target.files
     this._uploader.addFiles(files)
     this._uploader.startUpload({
@@ -111,6 +113,7 @@ export default class GlobalController {
           if (!xhr.response) {
             return setTimeout(() => doSomething(xhr),500)
           }
+          delete(self._scope.loadingSync)
           self._scope.imageUrl = `${self.baseUrl}/file/s3/${JSON.parse(xhr.response).filename}`
           self._scope.$apply()
         }
