@@ -19,10 +19,11 @@
     "mocha": "^3.1.1"
   },
   "dependencies": {
-    "angular": "^1.5.8",
-    "angular-animate": "^1.5.8",
+    "angular": "1.5.9",
+    "angular-animate": "1.5.9",
+    "angular-aria": "1.5.9",
     "angular-moment": "^1.0.0",
-    "angular-touch": "^1.5.8",
+    "angular-touch": "1.5.9",
     "angular-ui-bootstrap": "^2.3.0",
     "angular-ui-uploader": "^1.2.1",
     "async": "^2.1.1",
