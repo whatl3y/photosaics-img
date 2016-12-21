@@ -15,8 +15,10 @@ var Routes = require("./libs/Routes.js")
 var config = require("./config.js")
 var log = require('bunyan').createLogger(config.logger.options)
 
+var isHttpsFromHostname = config.server.HOST.indexOf('https://') > -1
+var isHttpsFromConfig = process.env.SECURE
 var serverTypeMap = {}
-if (config.server.HOST.indexOf('https://') > -1) {
+if (isHttpsFromConfig) {
   var privateKey = fs.readFileSync( 'certs/server.key' )
   var certificate = fs.readFileSync( 'certs/server.crt' )
   var creds = {key:privateKey, cert:certificate}
