@@ -96,7 +96,9 @@ function main(notClustering) {
       //static files
       app.use('/public',express.static(path.join(__dirname,'/public')))
 
-      //In production redirect to https endpoint
+      // HEROKU DEPLOYMENT ONLY HTTPS REDIRECT
+      // In production redirect to https endpoint
+      // http://stackoverflow.com/questions/29810607/how-to-force-https-redirect-on-heroku-with-express-4-0
       app.use(function(req, res, next) {
         if (config.server.IS_PRODUCTION) {
           if (req.headers['x-forwarded-proto'] != 'https') {
