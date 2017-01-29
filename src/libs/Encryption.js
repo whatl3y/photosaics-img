@@ -5,6 +5,7 @@
 // import * as crypto from 'crypto'
 const crypto = require('crypto');
 // -------------------------
+import fs from 'fs'
 import * as config from '../config'
 
 export default class Encryption {

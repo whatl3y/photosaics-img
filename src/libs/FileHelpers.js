@@ -10,7 +10,7 @@ export default class FileHelpers {
 
   static getFileName(fileName, extraText=Date.now()) {
     const lastPeriod = fileName.lastIndexOf(".")
-    return fileName.substring(0,lastPeriod) + "_" + extraText + fileName.substring(lastPeriod)
+    return `${fileName.substring(0,lastPeriod)}_${extraText}${fileName.substring(lastPeriod)}`
   }
 }
 
