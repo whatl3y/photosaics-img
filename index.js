@@ -99,14 +99,14 @@ function main(notClustering) {
       // HEROKU DEPLOYMENT ONLY HTTPS REDIRECT
       // In production redirect to https endpoint
       // http://stackoverflow.com/questions/29810607/how-to-force-https-redirect-on-heroku-with-express-4-0
-      app.use(function(req, res, next) {
-        if (config.server.IS_PRODUCTION) {
-          if (req.headers['x-forwarded-proto'] != 'https') {
-            return res.redirect('https://' + req.headers.host + req.url)
-          }
-        }
-        return next()
-      })
+      // app.use(function(req, res, next) {
+      //   if (config.server.IS_PRODUCTION) {
+      //     if (req.headers['x-forwarded-proto'] != 'https') {
+      //       return res.redirect('https://' + req.headers.host + req.url)
+      //     }
+      //   }
+      //   return next()
+      // })
 
       // initialize routes object to be used to bind express routes
       var aRoutes = fs.readdirSync('routes')
