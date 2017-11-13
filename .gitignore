@@ -1,6 +1,7 @@
 # ignore
 *.log
 *.DS_Store
+.env
 /certs
 /EXTRAS
 /_internal_tests

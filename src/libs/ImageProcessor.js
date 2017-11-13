@@ -1,6 +1,6 @@
 import async_waterfall from 'async/waterfall'
-import * as lwip from 'lwip'
-import * as Jimp from 'jimp'
+import lwip from 'pajk-lwip'
+import Jimp from 'jimp'
 import ImageHelpers from './ImageHelpers'
 
 export default class ImageProcessor extends ImageHelpers {

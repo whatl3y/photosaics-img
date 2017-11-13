@@ -1,10 +1,10 @@
-import * as fs from 'fs'
+import fs from 'fs'
+import async_waterfall from 'async/waterfall'
 import ApiHandler from './ApiHandler'
 import AwsS3 from './AwsS3'
 import ImageProcessor from './ImageProcessor'
 import Encryption from './Encryption'
-import * as config from '../config'
-import async_waterfall from 'async/waterfall'
+import config from '../config'
 
 export { ExpressS3 as default }
 

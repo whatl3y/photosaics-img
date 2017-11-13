@@ -1,21 +1,23 @@
 {
-  "name": "sosaicsimg",
+  "name": "photosaics-img",
   "version": "0.0.1",
-  "description": "Allows manipulating images form an API.",
+  "description": "Allows manipulating images from an API.",
   "main": "forever.js",
   "engines": {
-    "node": "6.9.2"
+    "node": "8.9.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/whatl3y/sosaicsimg.git"
+    "url": "https://github.com/whatl3y/photosaics-img.git"
   },
   "scripts": {
+    "dev": "nf start",
     "start": "node forever",
     "postinstall": "gulp prep-prod",
     "test": "mocha --compilers js:babel-core/register --recursive tests"
   },
   "devDependencies": {
+    "foreman": "2.0.0",
     "mocha": "^3.1.1"
   },
   "dependencies": {
@@ -50,16 +52,15 @@
     "gulp-uglify": "^1.2.0",
     "image-type": "^2.1.0",
     "jimp": "^0.2.27",
-    "lwip": "0.0.9",
     "minimist": "latest",
     "newrelic": "latest",
     "node-uuid": "^1.4.7",
+    "pajk-lwip": "0.2.0",
     "pug": "^2.0.0-beta6",
-    "redis": "^2.6.3",
     "request": "^2.75.0",
     "streamifier": "^0.1.1",
     "webpack-stream": "^3.2.0"
   },
   "author": "Lance Whatley",
-  "license": "ISC"
+  "license": "MIT"
 }

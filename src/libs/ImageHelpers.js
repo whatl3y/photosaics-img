@@ -2,12 +2,12 @@ import async_parallel from 'async/parallel'
 import async_reduce from 'async/reduce'
 import async_waterfall from 'async/waterfall'
 import async_times from 'async/times'
-import * as fs from 'fs'
+import fs from 'fs'
 // import * as imagetype from 'image-type'
 const imageType = require('image-type')
-import * as request from 'request'
-import * as lwip from 'lwip'
-import * as exif from 'exif'
+import request from 'request'
+import lwip from 'pajk-lwip'
+import exif from 'exif'
 import AwsS3 from './AwsS3'
 
 export default class ImageHelpers {

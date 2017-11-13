@@ -12,7 +12,7 @@ export default class GlobalController {
   }
 
   init() {
-    this.baseUrl = `${location.protocol}//${location.host}`
+    this._scope.baseUrl = `${location.protocol}//${location.host}`
     this._scope.processingFunctions = []
     this._scope.functionTypes = {
       b: {
@@ -114,7 +114,7 @@ export default class GlobalController {
             return setTimeout(() => doSomething(xhr),500)
           }
           delete(self._scope.loadingSync)
-          self._scope.imageUrl = `${self.baseUrl}/file/s3/${JSON.parse(xhr.response).filename}`
+          self._scope.imageUrl = `${self._scope.baseUrl}/file/s3/${JSON.parse(xhr.response).filename}`
           self._scope.$apply()
         }
         doSomething(xhr)
@@ -132,7 +132,7 @@ export default class GlobalController {
     const encodedFunctions = settings.map((s) => s.type).join('') || '*'
     let encodedSettings = {}
 
-    settings.forEach((s) => {
+    settings.forEach(s => {
       encodedSettings[s.type] = {}
       const typeConfig = this._scope.functionTypes[s.type]
       if (typeConfig) {
@@ -146,13 +146,13 @@ export default class GlobalController {
     })
 
     encodedSettings = (Object.keys(encodedSettings).length) ? encodeURIComponent(JSON.stringify(encodedSettings)) : '*'
-    let generatedUrl = `${this.baseUrl}/${encodedFunctions}/*/${imageUrl}`
+    let generatedUrl = `${this._scope.baseUrl}/${encodedFunctions}/*/${imageUrl}`
     if (generatedUrl === this._scope.generatedUrl) return true
 
     this._http.get(`/api/serialize/${btoa(encodedSettings)}`)
     .success((res) => {
       this._scope.serializedSettings = (encodedSettings === '*') ? '*' : res.string
-      generatedUrl = `${this.baseUrl}/${encodedFunctions}/${this._scope.serializedSettings}/${imageUrl}`
+      generatedUrl = `${this._scope.baseUrl}/${encodedFunctions}/${this._scope.serializedSettings}/${imageUrl}`
       if (generatedUrl === this._scope.generatedUrl) return true
 
       this._scope.generatedUrl = generatedUrl

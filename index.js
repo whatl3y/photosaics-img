@@ -7,7 +7,6 @@ var app = express()
 var cluster = require('cluster')
 var formidable = require('express-formidable')
 var bodyParser = require('body-parser')
-var redis = require('redis')
 var path = require('path')
 var async = require('async')
 var jade = require('pug')
@@ -79,11 +78,6 @@ function main(notClustering) {
         log.error(err)
         return process.exit()
       }
-
-      //establish global redis client
-      const redisUrl = url.parse(config.redis.url)
-      config.redis.client = redis.createClient(redisUrl.port, redisUrl.hostname, {no_ready_check: true})
-      if (redisUrl.auth) config.redis.client.auth(redisUrl.auth.split(":")[1])
 
       //template engine setup
       app.set('views', path.join(__dirname, 'views'))
